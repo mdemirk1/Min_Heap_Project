@@ -23,6 +23,7 @@ vector<string> splitstr(string str, string deli = " ")
     return v;
 }
 
+//hash functions
 template <typename T>
 void min_heapify(vector<T>& A, int i, int heapSize)
 {
@@ -65,9 +66,9 @@ void heap_decrease_key(vector<Vehicle>&A, int i, int heapSize, Vehicle key)
     if(key > A[i])
     {
         cerr << "New key is greater!" << endl;
-        cout << "key--> " << key << " A[i] --> " << A[i] << endl;
+    
     }
-    A[i].setTime(to_string(key.getDistance()), to_string(key.getSpeed()));
+    A[i].setTime(key.getDistance(), key.getSpeed());
     while(i>1 && (A[int(i/2)] >= A[i]))
     {
         swap(A[i], A[int(i/2)]);
@@ -115,7 +116,7 @@ int main(int argc, char *argv[]) {
     
     // dummy variable to set 0th index in heap.
     Vehicle empty;
-    empty.setTime("-1", "1");
+    empty.setTime(-1, 1);
     vehicles.push_back(empty);
 
     //vehicle file.
@@ -139,23 +140,16 @@ int main(int argc, char *argv[]) {
     while (getline(file, line)) {
         Vehicle temp;
         reader = splitstr(line, "\t");
-        temp.setID(reader.at(0));
+        temp.setID(stoi(reader.at(0)));
         temp.setLoc(reader.at(1));
-        temp.setDist(reader.at(2));
-        temp.setSpeed(reader.at(3));
-        temp.setTime(reader.at(2), reader.at(3));
+        temp.setDist(stod(reader.at(2)));
+        temp.setSpeed(stod(reader.at(3)));
+        temp.setTime(stod(reader.at(2)), stod(reader.at(3)));
         vehicles.push_back(temp);
         size++;
     }
 
     build_min_heap(vehicles);
-
-    // eger ln == 0 ise extract min yap
-    // degilse decrease key = 1. index
-    // i ise lucky number sonra tekrar ext min
-    // her extcat edilen eleman file a yazilcak id si
-    // ext ettigin elemanin loc distnace requst filedaki dist
-    // ve loca esitlenecek
 
     ofstream out;
     ifstream r_file;
@@ -185,21 +179,20 @@ int main(int argc, char *argv[]) {
             cntr++;
             out << v.getID() << endl;
             v.setLoc(r_reader.at(0));
-            v.setDist(r_reader.at(1));
-            v.setTime(r_reader.at(1), to_string(v.getSpeed()));
+            v.setDist(stod(r_reader.at(1)));
+            v.setTime(stod(r_reader.at(1)), v.getSpeed());
             min_heap_insert(vehicles, size, v);
             size ++;
         }
         else {
             heap_decrease_key(vehicles, stoi(r_reader.at(2)) + 1, size, vehicles[1]);
             v = heap_extract_min(vehicles, size);
-            // cout << "the id: " << v.getID() <<endl;
             size --;
             cntr = cntr + 2;
             out << v.getID() << endl;
             v.setLoc(r_reader.at(0));
-            v.setDist(r_reader.at(1));
-            v.setTime(r_reader.at(1), to_string(v.getSpeed()));
+            v.setDist(stod(r_reader.at(1)));
+            v.setTime(stod(r_reader.at(1)), v.getSpeed());
             min_heap_insert(vehicles, size, v);
             size ++;
         }
